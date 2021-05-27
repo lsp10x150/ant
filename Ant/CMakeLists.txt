@@ -1,0 +1,6 @@
+﻿cmake_minimum_required (VERSION 3.8)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+find_package(fmt CONFIG REQUIRED)
+add_executable (ant "ant.cpp"  "ant.hpp")
+target_link_libraries(ant PRIVATE fmt::fmt)

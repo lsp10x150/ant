@@ -26,12 +26,7 @@ void get_input(int argc, char** argv, int& nAnts, int& width, int& height) {
 		success = scanf("%lu", &height);
 	}
 	set_cursor_pos_ansi(0, 0);
-	for (int i = 0; i < 7; i++) {
-		for (int i = 0; i < 30; i++) {
-			putchar(' ');
-		}
-		putchar('\n');
-	}
+	printf("\033[J");
 }
 
 int main(int argc, char** argv) {
@@ -46,7 +41,7 @@ int main(int argc, char** argv) {
 		exit(EXIT_FAILURE);
 	}
 	Game g(width, height, nAnts);
-	for (int i = 0; i < 100'000; i++) {
+	for (;;) {
 		set_cursor_pos_ansi(0, 0);
 		g.take_turn();
 		g.print();

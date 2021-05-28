@@ -8,7 +8,6 @@
 #include <fmt/color.h>
 
 namespace ant {
-
 	std::random_device rd;
 	std::default_random_engine e(rd());
 
@@ -32,8 +31,17 @@ namespace ant {
 				}
 			}
 		}
+		~Board() {
+			for (int i = 0; i < height; i++) {
+				delete[] board[i];
+			}
+			delete[] board;
+		}
+
 		void chage_color(Coordinates c) {
-			board[c.y][c.x] = board[c.y][c.x] == CellColor::White ? CellColor::Black : CellColor::White;
+			board[c.y][c.x] =	 board[c.y][c.x] == CellColor::White ? 
+													CellColor::Black : 
+													CellColor::White;
 		}
 		CellColor get_color(Coordinates c) {
 			return board[c.y][c.x];
@@ -45,11 +53,10 @@ namespace ant {
 					if (board[i][j] == CellColor::White)
 						putchar(static_cast<char>(219));
 					else
-						fmt::print(" "); // static_cast<char>(176);
+						fmt::print(" ");
 				}
 				fmt::print("\n");
 			}
-
 		}
 
 		friend std::ostream& operator<< (std::ostream& os, const Board& b) {
@@ -64,6 +71,7 @@ namespace ant {
 			}
 			return os;
 		}
+
 		uint32_t get_width() { return width; }
 		uint32_t get_height() { return height; }
 	private:
@@ -73,6 +81,7 @@ namespace ant {
 
 	class Ant {
 	protected:
+		//! @todo this can be abstracted even more
 		void safe_inc_x(int& x, Direction& d, Board& b) {
 			if (x == b.get_width() - 1) {
 				--x;
@@ -122,11 +131,12 @@ namespace ant {
 			static std::uniform_int_distribution u(0, 3);
 			d = dirs[u(e)];
 		}
+
 		void move(Board& b) {
+			// this one maps directions on lambdas which helps ant to navigate properly
 			static std::map<Direction,
 				std::function<void(Ant& ant, Board& b)>>
-				navigate_funcs
-			{
+				navigate_funcs {
 				{Direction::East,
 				[](Ant& ant, Board& b) {
 					auto& coord = ant.coords();
@@ -197,14 +207,14 @@ namespace ant {
 			};
 			navigate_funcs[d](*this, b);
 		}
-	protected:
-		friend class Game;
-		Coordinates& coords() { return c; }
-		Direction& dir() { return d; }
 
 	private:
 		Coordinates c;
 		Direction d;
+
+		friend class Game;
+		Coordinates& coords() { return c; }
+		Direction& dir() { return d; }
 	};
 
 	class Game {
